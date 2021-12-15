@@ -2,10 +2,13 @@
 # Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
 ################################################################################
 
-/MessageBroker/MessageBrokerServer/obj
-/MessageBroker/MessageBrokerServer/bin/Debug/netcoreapp3.1
-/MessageBroker/.vs/MessageBroker/v16
 /.vs
-/MessageBroker/MessageBrokerClient/obj/Debug/netcoreapp3.1
-/MessageBroker/MessageBrokerClient/bin/Debug/netcoreapp3.1
+/MessageBroker/.vs
+/MessageBroker/MessageBrokerServer/obj
+/MessageBroker/MessageBrokerServer/bin
 /MessageBroker/MessageBrokerClient/obj
+/MessageBroker/MessageBrokerClient/bin
+*.user
+*.pubxml
+/MessageBroker/WinFormsClient/bin
+/MessageBroker/WinFormsClient/obj

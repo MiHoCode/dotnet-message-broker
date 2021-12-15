@@ -58,6 +58,10 @@ namespace MessageBrokerClient
 
                 this.ClientIV = Crypt.Decrypt(stream.ReadMiniBuffer(), this.ServerKey, this.ServerIV);
 
+                authKey = Crypt.Decrypt(stream.ReadMiniBuffer(), this.ClientKey, this.ClientIV);
+                stream.WriteMiniBuffer(authKey);
+
+
                 this.Running = true;
                 new Thread(new ThreadStart(run)).Start();
                 return true;
@@ -132,6 +136,19 @@ namespace MessageBrokerClient
             tcp.Dispose();
         }
 
+        public void SendMessage(string receiver, string content, Action<Message> responseCallback = null)
+        {
+            SendMessage(receiver, Encoding.UTF8.GetBytes(content), responseCallback);
+        }
+        public void SendMessage(string receiver, byte[] content, Action<Message> responseCallback = null)
+        {
+            Message m = new Message();
+            m.Sender = this.ClientID;
+            m.Receiver = receiver;
+            m.IsResponseOf = "";
+            m.Content = content;
+            SendMessage(m, responseCallback);
+        }
         public void SendMessage(Message message, Action<Message> responseCallback = null)
         {
             message.Sender = this.ClientID;

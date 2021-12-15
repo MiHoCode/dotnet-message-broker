@@ -7,11 +7,11 @@ namespace MessageBrokerServer
 {
     public class Message
     {
-        public string ID { get; set; }
-        public string IsResponseOf { get; set; }
-        public string Sender { get; set; }
-        public string Receiver { get; set; }
-        public byte[] Content { get; set; }
+        public string ID { get; set; } = "";
+        public string IsResponseOf { get; set; } = "";
+        public string Sender { get; set; } = "";
+        public string Receiver { get; set; } = "";
+        public byte[] Content { get; set; } = new byte[0];
 
         public byte[] ToByteArray()
         {

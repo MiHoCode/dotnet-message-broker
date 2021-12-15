@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBrokerServer", "Mess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBrokerClient", "MessageBrokerClient\MessageBrokerClient.csproj", "{1266C55A-40A2-479E-994E-F05227532DDB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsClient", "WinFormsClient\WinFormsClient.csproj", "{1DCD04BD-7625-4599-B3F2-9EDFB5A9B67D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1266C55A-40A2-479E-994E-F05227532DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1266C55A-40A2-479E-994E-F05227532DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1266C55A-40A2-479E-994E-F05227532DDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DCD04BD-7625-4599-B3F2-9EDFB5A9B67D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DCD04BD-7625-4599-B3F2-9EDFB5A9B67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DCD04BD-7625-4599-B3F2-9EDFB5A9B67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DCD04BD-7625-4599-B3F2-9EDFB5A9B67D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

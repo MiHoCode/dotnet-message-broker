@@ -7,10 +7,10 @@ namespace MessageBrokerClient
     public class Message
     {
         public string ID { get; set; } = Guid.NewGuid().ToString();
-        public string IsResponseOf { get; set; }
-        public string Sender { get; set; }
-        public string Receiver { get; set; }
-        public byte[] Content { get; set; }
+        public string IsResponseOf { get; set; } = "";
+        public string Sender { get; set; } = "";
+        public string Receiver { get; set; } = "";
+        public byte[] Content { get; set; } = new byte[0];
 
         public byte[] ToByteArray()
         {

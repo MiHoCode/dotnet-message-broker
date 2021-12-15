@@ -18,6 +18,7 @@ namespace MessageBrokerServer
             if (!Directory.Exists(KeyStore.KeysDirectory))
                 Directory.CreateDirectory(KeyStore.KeysDirectory);
             KeyStore.GetEncryptionKey("broker");
+            KeyStore.GetEncryptionKey("admin");
 
             Console.WriteLine("Key store intialized: " + KeysDirectory);
         }

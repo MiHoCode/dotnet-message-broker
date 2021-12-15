@@ -85,7 +85,7 @@ namespace MessageBrokerServer
                 stream.WriteMiniBuffer(KeyStore.Encrypt(Encoding.UTF8.GetBytes(auth), brokerKey, brokerIV)); // send encrypted auth guid
 
                 string authAnswer = Encoding.UTF8.GetString(stream.ReadMiniBuffer()); // receive decrypted auth guid
-                if (authAnswer != auth) // check id valid!
+                if (authAnswer != auth) // check if valid!
                 {
                     tcp.Close();
                     tcp.Dispose();
@@ -98,6 +98,15 @@ namespace MessageBrokerServer
 
                 // all following encryptions/decryptions use the client iv and the client key!
 
+                auth = Guid.NewGuid().ToString(); // generate a guid for the second auth process
+                stream.WriteMiniBuffer(KeyStore.Encrypt(Encoding.UTF8.GetBytes(auth), client.ClientKey, client.ClientIV)); // send encrypted auth guid
+                authAnswer = Encoding.UTF8.GetString(stream.ReadMiniBuffer()); // receive decrypted auth guid
+                if (authAnswer != auth) // check if valid!
+                {
+                    tcp.Close();
+                    tcp.Dispose();
+                }
+
                 bool connected = true;
 
                 while (connected) // loop
@@ -109,9 +118,15 @@ namespace MessageBrokerServer
                     {
                         // read and decrypt the message
                         byte[] message = KeyStore.Decrypt(stream.ReadBuffer(), client.ClientKey, client.ClientIV);
-                        string receiver = Message.ExtractReceiver(message);
-
-                        getClient(receiver).AddMessage(message);
+                        if (clientID == "admin")
+                        {
+                            processAdminMessage(Message.FromByteArray(message));
+                        }
+                        else
+                        {
+                            string receiver = Message.ExtractReceiver(message);
+                            getClient(receiver).AddMessage(message);
+                        }
                     }
                     else if(command == "disconnect") // close session
                     {
@@ -137,6 +152,31 @@ namespace MessageBrokerServer
                 tcp.Dispose();
             }
             catch { }
+        }
+
+        private void processAdminMessage(Message message)
+        {
+            string[] args = Encoding.UTF8.GetString(message.Content).Split(' ');
+            string cmd = args[0];
+
+            Message response = new Message();
+            response.Sender = "admin";
+            response.Receiver = "admin";
+            response.ID = Guid.NewGuid().ToString();
+            response.IsResponseOf = "";
+            response.Content = Encoding.UTF8.GetBytes("done.");
+
+            if (cmd == "addclient")
+            {
+                string clientID = args[1];
+                if (!string.IsNullOrWhiteSpace(clientID))
+                {
+                    string key = Convert.ToBase64String(KeyStore.GetEncryptionKey(clientID));
+                    response.Content = Encoding.UTF8.GetBytes(string.Format("{0}.key: {1}", clientID, key));
+                }
+            }
+
+            getClient("admin").AddMessage(response.ToByteArray());
         }
 
         public void Stop()
