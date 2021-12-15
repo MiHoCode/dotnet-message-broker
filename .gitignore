@@ -3,3 +3,6 @@
 ################################################################################
 
 /MessageBroker/MessageBrokerServer/obj
+/MessageBroker/MessageBrokerServer/bin/Debug/netcoreapp3.1
+/MessageBroker/.vs/MessageBroker/v16
+/.vs
