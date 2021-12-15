@@ -103,7 +103,7 @@ namespace MessageBrokerServer
                 while (connected) // loop
                 {
                     // receive a command
-                    string command = Encoding.UTF8.GetString(KeyStore.Decrypt(stream.ReadMiniBuffer(), brokerKey, brokerIV));
+                    string command = Encoding.UTF8.GetString(KeyStore.Decrypt(stream.ReadMiniBuffer(), client.ClientKey, client.ClientIV));
 
                     if(command == "message") // incoming message
                     {
@@ -129,7 +129,7 @@ namespace MessageBrokerServer
                     stream.WriteInt16((short)messages.Count);
                     foreach(byte[] m in messages)
                     {
-                        stream.WriteBuffer(KeyStore.Encrypt(m, brokerKey, brokerIV));
+                        stream.WriteBuffer(KeyStore.Encrypt(m, client.ClientKey, client.ClientIV));
                     }
                 }
 
