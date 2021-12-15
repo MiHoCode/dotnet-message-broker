@@ -1,11 +1,15 @@
 # dotnet-message-broker
 A simple message broker application (.NET Core)
 
+## Using the message broker server application
+Coming soon...
 
 ## Using the client library
 
 Initialize and start client:
 ```
+using MessageBrokerClient;
+
 string hostname = "myserver";
 string clientID = "exampleClient";
 string serverKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
