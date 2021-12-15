@@ -6,3 +6,6 @@
 /MessageBroker/MessageBrokerServer/bin/Debug/netcoreapp3.1
 /MessageBroker/.vs/MessageBroker/v16
 /.vs
+/MessageBroker/MessageBrokerClient/obj/Debug/netcoreapp3.1
+/MessageBroker/MessageBrokerClient/bin/Debug/netcoreapp3.1
+/MessageBroker/MessageBrokerClient/obj

@@ -2,7 +2,17 @@
 A simple message broker application (.NET Core)
 
 ## Using the message broker server application
-Coming soon...
+1. Build the application for your target platfrom i.e. linux64 (standalone!)
+2. Copy the application to your server
+3. Start the application
+
+It will automatically create a folder called 'keys' in the application directory.
+There you will find a file called 'broker.key', wich is the 'serverKey' for the client.
+To add client keys you will have to run the application with parameters, i.e.:
+```
+> MessageBrokerServer addclient myExampleClientID
+```
+This will create a new key file named after the client id.
 
 ## Using the client library
 
