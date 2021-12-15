@@ -82,27 +82,29 @@ namespace MessageBrokerServer
                 string auth = Guid.NewGuid().ToString(); // generate a guid for the auth process
 
                 stream.WriteMiniBuffer(brokerIV); // send broker iv
-                stream.WriteMiniBuffer(KeyStore.Encrypt(Encoding.UTF8.GetBytes(auth), brokerKey, brokerIV)); // send encrypted auth guid
+                stream.WriteEncrypt(Encoding.UTF8.GetBytes(auth), brokerKey, brokerIV); // send encrypted auth guid
 
                 string authAnswer = Encoding.UTF8.GetString(stream.ReadMiniBuffer()); // receive decrypted auth guid
                 if (authAnswer != auth) // check if valid!
                 {
+                    Console.WriteLine(string.Format("invalid auth: [{0}] / [{1}]", auth, authAnswer));
                     tcp.Close();
                     tcp.Dispose();
                 }
 
-                string clientID = Encoding.UTF8.GetString(KeyStore.Decrypt(stream.ReadMiniBuffer(), brokerKey, brokerIV)); // receive client ID
+                string clientID = Encoding.UTF8.GetString(stream.ReadDecrypt(brokerKey, brokerIV)); // receive client ID
 
                 BrokerClient client = getClient(clientID); // get/create/cache client object
-                stream.WriteMiniBuffer(KeyStore.Encrypt(client.ClientIV, brokerKey, brokerIV)); // send encrypted client iv for this session
+                stream.WriteEncrypt(client.ClientIV, brokerKey, brokerIV); // send encrypted client iv for this session
 
                 // all following encryptions/decryptions use the client iv and the client key!
 
                 auth = Guid.NewGuid().ToString(); // generate a guid for the second auth process
-                stream.WriteMiniBuffer(KeyStore.Encrypt(Encoding.UTF8.GetBytes(auth), client.ClientKey, client.ClientIV)); // send encrypted auth guid
+                stream.WriteEncrypt(Encoding.UTF8.GetBytes(auth), client.ClientKey, client.ClientIV); // send encrypted auth guid
                 authAnswer = Encoding.UTF8.GetString(stream.ReadMiniBuffer()); // receive decrypted auth guid
                 if (authAnswer != auth) // check if valid!
                 {
+                    Console.WriteLine(string.Format("invalid auth (2): [{0}] / [{1}]", auth, authAnswer));
                     tcp.Close();
                     tcp.Dispose();
                 }
@@ -112,12 +114,12 @@ namespace MessageBrokerServer
                 while (connected) // loop
                 {
                     // receive a command
-                    string command = Encoding.UTF8.GetString(KeyStore.Decrypt(stream.ReadMiniBuffer(), client.ClientKey, client.ClientIV));
+                    string command = Encoding.UTF8.GetString(stream.ReadDecrypt(client.ClientKey, client.ClientIV));
 
                     if(command == "message") // incoming message
                     {
                         // read and decrypt the message
-                        byte[] message = KeyStore.Decrypt(stream.ReadBuffer(), client.ClientKey, client.ClientIV);
+                        byte[] message = stream.ReadDecrypt(client.ClientKey, client.ClientIV);
                         if (clientID == "admin")
                         {
                             processAdminMessage(Message.FromByteArray(message));
@@ -144,7 +146,7 @@ namespace MessageBrokerServer
                     stream.WriteInt16((short)messages.Count);
                     foreach(byte[] m in messages)
                     {
-                        stream.WriteBuffer(KeyStore.Encrypt(m, client.ClientKey, client.ClientIV));
+                        stream.WriteEncrypt(m, client.ClientKey, client.ClientIV);
                     }
                 }
 
@@ -156,27 +158,38 @@ namespace MessageBrokerServer
 
         private void processAdminMessage(Message message)
         {
-            string[] args = Encoding.UTF8.GetString(message.Content).Split(' ');
-            string cmd = args[0];
-
-            Message response = new Message();
-            response.Sender = "admin";
-            response.Receiver = "admin";
-            response.ID = Guid.NewGuid().ToString();
-            response.IsResponseOf = "";
-            response.Content = Encoding.UTF8.GetBytes("done.");
-
-            if (cmd == "addclient")
+            if (message.Receiver == "server" || message.Receiver == "system" || message.Receiver == "broker")
             {
-                string clientID = args[1];
-                if (!string.IsNullOrWhiteSpace(clientID))
-                {
-                    string key = Convert.ToBase64String(KeyStore.GetEncryptionKey(clientID));
-                    response.Content = Encoding.UTF8.GetBytes(string.Format("{0}.key: {1}", clientID, key));
-                }
-            }
+                string[] args = Encoding.UTF8.GetString(message.Content).Split(' ');
+                string cmd = args[0];
 
-            getClient("admin").AddMessage(response.ToByteArray());
+                Message response = new Message();
+                response.Sender = "admin";
+                response.Receiver = "admin";
+                response.ID = Guid.NewGuid().ToString();
+                response.IsResponseOf = "";
+                response.Content = Encoding.UTF8.GetBytes("done.");
+
+                if (cmd == "addclient")
+                {
+                    string clientID = args[1];
+                    if (!string.IsNullOrWhiteSpace(clientID))
+                    {
+                        string key = Convert.ToBase64String(KeyStore.GetEncryptionKey(clientID));
+                        response.Content = Encoding.UTF8.GetBytes(string.Format("{0}.key: {1}", clientID, key));
+                    }
+                }
+                else
+                {
+                    response.Content = Encoding.UTF8.GetBytes(string.Format("unknown admin command: {0}", cmd));
+                }
+
+                getClient("admin").AddMessage(response.ToByteArray());
+            }
+            else
+            {
+                getClient(message.Receiver).AddMessage(message.ToByteArray());
+            }
         }
 
         public void Stop()

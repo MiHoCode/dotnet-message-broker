@@ -100,6 +100,23 @@ namespace MessageBrokerServer
             return Encoding.UTF8.GetString(this.ReadMiniBuffer());
         }
 
+
+        public void WriteEncrypt(byte[] data, byte[] key, byte[] iv)
+        {
+            this.WriteInt32(data.Length);
+            data = KeyStore.Encrypt(data, key, iv);
+            this.WriteBuffer(data);
+        }
+        public byte[] ReadDecrypt(byte[] key, byte[] iv)
+        {
+            int l = this.ReadInt32();
+            byte[] data = KeyStore.Decrypt(this.ReadBuffer(), key, iv);
+            byte[] result = new byte[l];
+            for (int i = 0; i < l; i++)
+                result[i] = data[i];
+            return result;
+        }
+
         public static byte[] Int32ToBytes(int value)
         {
             byte[] data = BitConverter.GetBytes(value);

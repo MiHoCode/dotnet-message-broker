@@ -25,6 +25,7 @@ namespace MessageBrokerServer
             lock (messages)
             {
                 result.AddRange(messages);
+                messages.Clear();
             }
             return result;
         }

@@ -51,14 +51,14 @@ namespace MessageBrokerClient
                 stream = new BigEndianStream(tcp.GetStream());
 
                 this.ServerIV = stream.ReadMiniBuffer();
-                byte[] authKey = Crypt.Decrypt(stream.ReadMiniBuffer(), this.ServerKey, this.ServerIV);
+                byte[] authKey = stream.ReadDecrypt(this.ServerKey, this.ServerIV);
 
                 stream.WriteMiniBuffer(authKey);
-                stream.WriteMiniBuffer(Crypt.Encrypt(Encoding.UTF8.GetBytes(this.ClientID), this.ServerKey, this.ServerIV));
+                stream.WriteEncrypt(Encoding.UTF8.GetBytes(this.ClientID), this.ServerKey, this.ServerIV);
 
-                this.ClientIV = Crypt.Decrypt(stream.ReadMiniBuffer(), this.ServerKey, this.ServerIV);
+                this.ClientIV = stream.ReadDecrypt(this.ServerKey, this.ServerIV);
 
-                authKey = Crypt.Decrypt(stream.ReadMiniBuffer(), this.ClientKey, this.ClientIV);
+                authKey = stream.ReadDecrypt(this.ClientKey, this.ClientIV);
                 stream.WriteMiniBuffer(authKey);
 
 
@@ -66,7 +66,7 @@ namespace MessageBrokerClient
                 new Thread(new ThreadStart(run)).Start();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }
@@ -88,18 +88,18 @@ namespace MessageBrokerClient
 
                 if(outMessage != null)
                 {
-                    stream.WriteMiniBuffer(Crypt.Encrypt(Encoding.UTF8.GetBytes("message"), this.ClientKey, this.ClientIV));
-                    stream.WriteBuffer(Crypt.Encrypt(outMessage.ToByteArray(), this.ClientKey, this.ClientIV));
+                    stream.WriteEncrypt(Encoding.UTF8.GetBytes("message"), this.ClientKey, this.ClientIV);
+                    stream.WriteEncrypt(outMessage.ToByteArray(), this.ClientKey, this.ClientIV);
                 }
                 else
                 {
-                    stream.WriteMiniBuffer(Crypt.Encrypt(Encoding.UTF8.GetBytes("peek"), this.ClientKey, this.ClientIV));
+                    stream.WriteEncrypt(Encoding.UTF8.GetBytes("peek"), this.ClientKey, this.ClientIV);
                 }
 
                 int incomingMessages = stream.ReadInt16();
                 for (int i = 0; i < incomingMessages; i++)
                 {
-                    byte[] messageBytes = Crypt.Decrypt(stream.ReadBuffer(), this.ClientKey, this.ClientIV);
+                    byte[] messageBytes = stream.ReadDecrypt(this.ClientKey, this.ClientIV);
                     Message message = Message.FromByteArray(messageBytes);
 
                     Action<Message> callback = null;

@@ -10,6 +10,10 @@ namespace MessageBrokerClient
     {
         public const int KEYSIZE = 256;
         public const int BLOCKSIZE = 128;
+        public const int BLOCKLENGHT = BLOCKSIZE / 8;
+
+        public const PaddingMode PADDING_MODE = PaddingMode.Zeros;
+        public const CipherMode CYPHER_MODE = CipherMode.CBC;
 
         public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
         {
@@ -17,13 +21,15 @@ namespace MessageBrokerClient
             {
                 aes.KeySize = KEYSIZE;
                 aes.BlockSize = BLOCKSIZE;
-                aes.Padding = PaddingMode.Zeros;
+                aes.Padding = PADDING_MODE;
+                aes.Mode = CYPHER_MODE;
 
                 aes.Key = key;
                 aes.IV = iv;
 
                 using (var encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
                 {
+                    //return performCryptography(data, encryptor);
                     return performCryptography(data, encryptor);
                 }
             }
@@ -35,13 +41,15 @@ namespace MessageBrokerClient
             {
                 aes.KeySize = KEYSIZE;
                 aes.BlockSize = BLOCKSIZE;
-                aes.Padding = PaddingMode.Zeros;
+                aes.Padding = PADDING_MODE;
+                aes.Mode = CYPHER_MODE;
 
                 aes.Key = key;
                 aes.IV = iv;
 
                 using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
                 {
+                    //return performCryptography(data, decryptor);
                     return performCryptography(data, decryptor);
                 }
             }
