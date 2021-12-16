@@ -1,4 +1,4 @@
-# Message Boker Server + Client (.NET Core)
+# Message Broker Server + Client (.NET Core)
 A simple but secure message broker application using encryption.
 
 ## Using the server application
