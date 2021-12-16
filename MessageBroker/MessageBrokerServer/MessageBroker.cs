@@ -50,6 +50,7 @@ namespace MessageBrokerServer
             this.TcpListener = new TcpListener(IPAddress.Any, this.Port);
             KeyStore.Init();
             brokerKey = KeyStore.GetEncryptionKey("broker");
+            GroupsConfig.Init();
         }
 
         public void Run()
@@ -127,7 +128,7 @@ namespace MessageBrokerServer
                         else
                         {
                             string receiver = Message.ExtractReceiver(message);
-                            getClient(receiver).AddMessage(message);
+                            forwardMessage(receiver, message);
                         }
                     }
                     else if(command == "disconnect") // close session
@@ -158,37 +159,140 @@ namespace MessageBrokerServer
 
         private void processAdminMessage(Message message)
         {
-            if (message.Receiver == "server" || message.Receiver == "system" || message.Receiver == "broker")
+            try
             {
-                string[] args = Encoding.UTF8.GetString(message.Content).Split(' ');
-                string cmd = args[0];
+                if (message.Receiver == "server" || message.Receiver == "system" || message.Receiver == "broker")
+                {
+                    string[] args = Encoding.UTF8.GetString(message.Content).Split(' ');
+                    string cmd = args[0];
 
+                    Message response = new Message();
+                    response.Sender = "admin";
+                    response.Receiver = "admin";
+                    response.ID = Guid.NewGuid().ToString();
+                    response.IsResponseOf = "";
+                    response.Content = Encoding.UTF8.GetBytes("done.");
+
+                    if (cmd == "addclient")
+                    {
+                        string clientID = args[1];
+                        if (!string.IsNullOrWhiteSpace(clientID))
+                        {
+                            string key = Convert.ToBase64String(KeyStore.GetEncryptionKey(clientID));
+                            response.Content = Encoding.UTF8.GetBytes(string.Format("{0}.key: {1}", clientID, key));
+                        }
+                    }
+                    else if (cmd == "addgroup")
+                    {
+                        string groupID = args[1];
+                        if (!string.IsNullOrWhiteSpace(groupID))
+                        {
+                            Group group = GroupsConfig.Instance.Groups.Where(Key => Key.Name == groupID).FirstOrDefault();
+                            if(group == null)
+                            {
+                                group = new Group() { Name = groupID };
+                                GroupsConfig.Instance.Groups.Add(group);
+                                GroupsConfig.Instance.Save();
+                                response.Content = Encoding.UTF8.GetBytes(string.Format("new group: {0}", groupID));
+                            }
+                        }
+                    }
+                    else if (cmd == "removegroup")
+                    {
+                        string groupID = args[1];
+                        if (!string.IsNullOrWhiteSpace(groupID))
+                        {
+                            GroupsConfig.Instance.Groups.RemoveAll(Key => Key.Name == groupID);
+                            GroupsConfig.Instance.Save();
+                            response.Content = Encoding.UTF8.GetBytes(string.Format("group removed: {0}", groupID));
+                        }
+                    }
+                    else if (cmd == "addgroupmember")
+                    {
+                        string groupID = args[1];
+                        string memberID = args[2];
+                        if (!string.IsNullOrWhiteSpace(groupID) && !string.IsNullOrWhiteSpace(memberID))
+                        {
+                            Group group = GroupsConfig.Instance.Groups.Where(Key => Key.Name == groupID).FirstOrDefault();
+                            if (group != null)
+                            {
+                                if (!group.Members.Contains(memberID))
+                                    group.Members.Add(memberID);
+                                KeyStore.GetEncryptionKey(memberID);
+                                GroupsConfig.Instance.Save();
+                                response.Content = Encoding.UTF8.GetBytes(string.Format("added '{0}' to group '{1}'", memberID, groupID));
+                            }
+                        }
+                    }
+                    else if (cmd == "removegroupmember")
+                    {
+                        string groupID = args[1];
+                        string memberID = args[2];
+                        if (!string.IsNullOrWhiteSpace(groupID) && !string.IsNullOrWhiteSpace(memberID))
+                        {
+                            Group group = GroupsConfig.Instance.Groups.Where(Key => Key.Name == groupID).FirstOrDefault();
+                            if (group != null)
+                            {
+                                group.Members.RemoveAll(Key => Key == memberID);
+                                GroupsConfig.Instance.Save();
+                                response.Content = Encoding.UTF8.GetBytes(string.Format("removed '{0}' from group '{1}'", memberID, groupID));
+                            }
+                        }
+                    }
+                    else if (cmd == "help")
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("AVAILABLE ADMIN COMMANDS:");
+                        sb.AppendLine();
+                        sb.AppendLine("addclient [clientID]");
+                        sb.AppendLine("addgroup [groupID]");
+                        sb.AppendLine("removegroup [groupID]");
+                        sb.AppendLine("addgroupmember [groupID] [clientID]");
+                        sb.AppendLine("removegroupmember [groupID] [clientID]");
+                        sb.AppendLine("help");
+                        response.Content = Encoding.UTF8.GetBytes(sb.ToString());
+                    }
+                    else
+                    {
+                        response.Content = Encoding.UTF8.GetBytes(string.Format("unknown admin command: {0}", cmd));
+                    }
+
+                    forwardMessage("admin", response.ToByteArray());
+                }
+                else
+                {
+                    forwardMessage(message.Receiver, message.ToByteArray());
+                }
+            }
+            catch (Exception ex)
+            {
                 Message response = new Message();
                 response.Sender = "admin";
                 response.Receiver = "admin";
                 response.ID = Guid.NewGuid().ToString();
                 response.IsResponseOf = "";
-                response.Content = Encoding.UTF8.GetBytes("done.");
+                response.Content = Encoding.UTF8.GetBytes(string.Format("ERROR: {0}", ex.Message));
+                forwardMessage("admin", response.ToByteArray());
+            }
+        }
 
-                if (cmd == "addclient")
+        private void forwardMessage(string receiver, byte[] message)
+        {
+            if (receiver.StartsWith("group:"))
+            {
+                string groupID = receiver.Substring("group:".Length).Trim();
+                Group group = GroupsConfig.Instance.Groups.Where(Key => Key.Name == groupID).FirstOrDefault();
+                if(group != null)
                 {
-                    string clientID = args[1];
-                    if (!string.IsNullOrWhiteSpace(clientID))
+                    foreach(string member in group.Members)
                     {
-                        string key = Convert.ToBase64String(KeyStore.GetEncryptionKey(clientID));
-                        response.Content = Encoding.UTF8.GetBytes(string.Format("{0}.key: {1}", clientID, key));
+                        getClient(member).AddMessage(message);
                     }
                 }
-                else
-                {
-                    response.Content = Encoding.UTF8.GetBytes(string.Format("unknown admin command: {0}", cmd));
-                }
-
-                getClient("admin").AddMessage(response.ToByteArray());
             }
             else
             {
-                getClient(message.Receiver).AddMessage(message.ToByteArray());
+                getClient(receiver).AddMessage(message);
             }
         }
 

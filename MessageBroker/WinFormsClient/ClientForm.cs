@@ -35,6 +35,8 @@ namespace WinFormsClient
 
         private void OnMessageReceived(MessageBrokerClient.Message obj)
         {
+            if (!client.Running)
+                return;
             addOutput(obj.Sender + ":");
             addOutput(Encoding.UTF8.GetString(obj.Content));
         }
@@ -81,6 +83,13 @@ namespace WinFormsClient
             textBox1.AppendText("\r\n" + line);
             textBox1.SelectionStart = textBox1.Text.Length;
             textBox1.ScrollToCaret();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (client.Running)
+                client.Close();
+            base.OnClosing(e);
         }
     }
 }

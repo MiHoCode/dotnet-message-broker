@@ -23,6 +23,8 @@ namespace MessageBrokerClient
 
         public int RequestDelay { get; set; }
 
+        public Exception Exception { get; set; } = null;
+
         private TcpClient tcp;
         private BigEndianStream stream;
         private List<Message> messages = new List<Message>();
@@ -68,6 +70,7 @@ namespace MessageBrokerClient
             }
             catch (Exception ex)
             {
+                this.Exception = ex;
                 return false;
             }
         }
