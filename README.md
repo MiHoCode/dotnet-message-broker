@@ -1,7 +1,7 @@
 # dotnet-message-broker
 A simple message broker application (.NET Core)
 
-## Using the message broker server application
+## Using the server application
 1. Build the application for your target platfrom i.e. linux64 (standalone!)
 2. Copy the application to your server
 3. Start the application
@@ -81,4 +81,13 @@ client.MessageReceived += (Message message) =>
 
     client.SendMessage(response);
 };
+```
+
+Send message to group
+```
+Message message = new Message();
+message.Receiver = "group:examplegroup";
+message.Content = Encoding.UTF8.GetBytes("Hello Group!");
+
+client.SendMessage(message);
 ```
