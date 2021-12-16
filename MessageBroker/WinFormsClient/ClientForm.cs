@@ -38,7 +38,7 @@ namespace WinFormsClient
             if (!client.Running)
                 return;
             addOutput(obj.Sender + ":");
-            addOutput(Encoding.UTF8.GetString(obj.Content));
+            addOutput(Encoding.UTF8.GetString(obj.Content).Replace("\n", "\r\n"));
         }
 
         private void executeCommand(string cmd)
