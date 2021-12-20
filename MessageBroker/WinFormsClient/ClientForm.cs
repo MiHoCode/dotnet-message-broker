@@ -69,6 +69,7 @@ namespace WinFormsClient
                 e.SuppressKeyPress = true;
                 executeCommand(textBox_cmd.Text);
                 textBox_cmd.Text = receiver;
+                textBox_cmd.SelectionStart = textBox_cmd.Text.Length;
             }
         }
 

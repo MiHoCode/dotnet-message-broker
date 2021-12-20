@@ -31,7 +31,7 @@ namespace MessageBrokerClient
             };
 
             Message message = new Message();
-            message.Receiver = "otherClient";
+            message.Recipient = "otherClient";
             message.Content = Encoding.UTF8.GetBytes("Hello World!");
 
             client.SendMessage(message, (Message response) =>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <host>127.0.0.1</host>
+  <clientId>exampleClient</clientId>
+  <serverKey>xxxxxxxxxxxx</serverKey>
+  <clientKey>xxxxxxxxxxxx</clientKey>
+</config>

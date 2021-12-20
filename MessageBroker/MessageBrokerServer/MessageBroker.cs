@@ -127,7 +127,7 @@ namespace MessageBrokerServer
                         }
                         else
                         {
-                            string receiver = Message.ExtractReceiver(message);
+                            string receiver = Message.ExtractRecipient(message);
                             forwardMessage(receiver, message);
                         }
                     }
@@ -161,14 +161,14 @@ namespace MessageBrokerServer
         {
             try
             {
-                if (message.Receiver == "server" || message.Receiver == "system" || message.Receiver == "broker")
+                if (message.Recipient == "server" || message.Recipient == "system" || message.Recipient == "broker")
                 {
                     string[] args = Encoding.UTF8.GetString(message.Content).Split(' ');
                     string cmd = args[0];
 
                     Message response = new Message();
                     response.Sender = "admin";
-                    response.Receiver = "admin";
+                    response.Recipient = "admin";
                     response.ID = Guid.NewGuid().ToString();
                     response.IsResponseOf = "";
                     response.Content = Encoding.UTF8.GetBytes("done.");
@@ -261,14 +261,14 @@ namespace MessageBrokerServer
                 }
                 else
                 {
-                    forwardMessage(message.Receiver, message.ToByteArray());
+                    forwardMessage(message.Recipient, message.ToByteArray());
                 }
             }
             catch (Exception ex)
             {
                 Message response = new Message();
                 response.Sender = "admin";
-                response.Receiver = "admin";
+                response.Recipient = "admin";
                 response.ID = Guid.NewGuid().ToString();
                 response.IsResponseOf = "";
                 response.Content = Encoding.UTF8.GetBytes(string.Format("ERROR: {0}", ex.Message));
@@ -292,7 +292,7 @@ namespace MessageBrokerServer
             }
             else
             {
-                getClient(receiver).AddMessage(message);
+                getClient(receiver.Split('/')[0]).AddMessage(message);
             }
         }
 

@@ -10,7 +10,7 @@ namespace MessageBrokerServer
         public string ID { get; set; } = "";
         public string IsResponseOf { get; set; } = "";
         public string Sender { get; set; } = "";
-        public string Receiver { get; set; } = "";
+        public string Recipient { get; set; } = "";
         public byte[] Content { get; set; } = new byte[0];
 
         public byte[] ToByteArray()
@@ -19,7 +19,7 @@ namespace MessageBrokerServer
             {
                 BigEndianStream stream = new BigEndianStream(ms);
 
-                stream.WriteShortString(this.Receiver);
+                stream.WriteShortString(this.Recipient);
                 stream.WriteShortString(this.ID);
                 stream.WriteShortString(this.IsResponseOf);
                 stream.WriteShortString(this.Sender);
@@ -38,7 +38,7 @@ namespace MessageBrokerServer
                 BigEndianStream stream = new BigEndianStream(ms);
 
                 Message message = new Message();
-                message.Receiver = stream.ReadShortString();
+                message.Recipient = stream.ReadShortString();
                 message.ID = stream.ReadShortString();
                 message.IsResponseOf = stream.ReadShortString();
                 message.Sender = stream.ReadShortString();
@@ -49,7 +49,7 @@ namespace MessageBrokerServer
             }
         }
 
-        public static string ExtractReceiver(byte[] messageAsBytes)
+        public static string ExtractRecipient(byte[] messageAsBytes)
         {
             int l = messageAsBytes[0];
             byte[] data = new byte[l];

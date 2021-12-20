@@ -9,7 +9,7 @@ namespace MessageBrokerClient
         public string ID { get; set; } = Guid.NewGuid().ToString();
         public string IsResponseOf { get; set; } = "";
         public string Sender { get; set; } = "";
-        public string Receiver { get; set; } = "";
+        public string Recipient { get; set; } = "";
         public byte[] Content { get; set; } = new byte[0];
 
         public byte[] ToByteArray()
@@ -18,7 +18,7 @@ namespace MessageBrokerClient
             {
                 BigEndianStream stream = new BigEndianStream(ms);
 
-                stream.WriteShortString(this.Receiver);
+                stream.WriteShortString(this.Recipient);
                 stream.WriteShortString(this.ID);
                 stream.WriteShortString(this.IsResponseOf);
                 stream.WriteShortString(this.Sender);
@@ -37,7 +37,7 @@ namespace MessageBrokerClient
                 BigEndianStream stream = new BigEndianStream(ms);
 
                 Message message = new Message();
-                message.Receiver = stream.ReadShortString();
+                message.Recipient = stream.ReadShortString();
                 message.ID = stream.ReadShortString();
                 message.IsResponseOf = stream.ReadShortString();
                 message.Sender = stream.ReadShortString();
@@ -63,7 +63,8 @@ namespace MessageBrokerClient
         {
             Message response = new Message();
             response.IsResponseOf = this.ID;
-            response.Sender = this.Receiver;
+            response.Sender = this.Recipient;
+            response.Recipient = this.Sender;
 
             return response;
         }

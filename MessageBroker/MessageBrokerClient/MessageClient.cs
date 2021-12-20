@@ -139,22 +139,23 @@ namespace MessageBrokerClient
             tcp.Dispose();
         }
 
-        public void SendMessage(string receiver, string content, Action<Message> responseCallback = null)
+        public void SendMessage(string recipient, string content, Action<Message> responseCallback = null)
         {
-            SendMessage(receiver, Encoding.UTF8.GetBytes(content), responseCallback);
+            SendMessage(recipient, Encoding.UTF8.GetBytes(content), responseCallback);
         }
-        public void SendMessage(string receiver, byte[] content, Action<Message> responseCallback = null)
+        public void SendMessage(string recipient, byte[] content, Action<Message> responseCallback = null)
         {
             Message m = new Message();
             m.Sender = this.ClientID;
-            m.Receiver = receiver;
+            m.Recipient = recipient;
             m.IsResponseOf = "";
             m.Content = content;
             SendMessage(m, responseCallback);
         }
         public void SendMessage(Message message, Action<Message> responseCallback = null)
         {
-            message.Sender = this.ClientID;
+            if (string.IsNullOrEmpty(message.Sender))
+                message.Sender = this.ClientID;
             if (responseCallback != null)
             {
                 lock (callbacks)

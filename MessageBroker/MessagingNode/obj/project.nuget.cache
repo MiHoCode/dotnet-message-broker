@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "sRkw01Z2gyfJog0LkpHg4lGphSvpSI7HKe3nScBf5f89FCvFVs4JHKsqYlgye8ApiT0nvB9GLvqSA8BMmemGpg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\hofme\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.13\\microsoft.netcore.app.host.win-x64.3.1.13.nupkg.sha512"
+  ],
+  "logs": []
+}
