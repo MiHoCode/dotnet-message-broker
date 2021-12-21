@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj": {}
+    "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj": {
+    "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj",
+        "projectUniqueName": "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj",
         "projectName": "MessageBrokerClient",
-        "projectPath": "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj",
-        "packagesPath": "C:\\Users\\hofme\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\obj\\",
+        "projectPath": "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj",
+        "packagesPath": "C:\\Users\\Hofmeier\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\hofme\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hofmeier\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,24 +54,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.104\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.210\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj": {
+    "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj",
+        "projectUniqueName": "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj",
         "projectName": "MessagingNode",
-        "projectPath": "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj",
-        "packagesPath": "C:\\Users\\hofme\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\obj\\",
+        "projectPath": "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\MessagingNode.csproj",
+        "packagesPath": "C:\\Users\\Hofmeier\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessagingNode\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\hofme\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hofmeier\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -88,8 +82,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj": {
-                "projectPath": "C:\\Users\\hofme\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj"
+              "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj": {
+                "projectPath": "C:\\Users\\Hofmeier\\source\\repos\\dotnet-message-broker\\MessageBroker\\MessageBrokerClient\\MessageBrokerClient.csproj"
               }
             }
           }
@@ -113,18 +107,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.1.13, 3.1.13]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.104\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.210\\RuntimeIdentifierGraph.json"
         }
       }
     }

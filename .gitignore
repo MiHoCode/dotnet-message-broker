@@ -12,3 +12,5 @@
 *.pubxml
 /MessageBroker/WinFormsClient/bin
 /MessageBroker/WinFormsClient/obj
+/MessageBroker/MessagingNode/bin
+/MessageBroker/MessagingNode/obj
