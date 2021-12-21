@@ -1,6 +1,6 @@
 # Message Broker Server + Clients
 A simple but secure message broker application using encryption.
-![alt text](https://github.com/MiHoCode/dotnet-message-broker/blob/main/scheme.png?raw=true)
+![alt text](scheme.png?raw=true)
 
 ## Using the server application
 1. Build the application for your target platfrom i.e. linux64 (standalone!)
