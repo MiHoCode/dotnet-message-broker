@@ -1,94 +1,27 @@
-# Message Broker Server + Clients
-A simple but secure message broker application using encryption.
+# IoT Data Messaging System
+A simple but secure data messaging application using encryption.
 ![alt text](scheme.png?raw=true)
 
-## Using the server application
-1. Build the application for your target platfrom i.e. linux64 (standalone!)
-2. Copy the application to your server
-3. Start the application
+## Applications / Components
+* Message Broker Server
+* Message Broker Client
+* Messaging Node
+* Messaging Client
 
-It will automatically create a folder called 'keys' in the application directory.
-There you will find a file called 'broker.key', wich is the 'serverKey' for the client.
-To add client keys you will have to run the application with parameters, i.e.:
-```
-> MessageBrokerServer addclient myExampleClientID
-```
-This will create a new key file named after the client id.
+### Message Broker Server
+The Message Broker Server is a .NET Core console application that acts as an intermediary service. This application should be installed on a server that is accessible via the Internet, if clients from different networks should be able to communicate with each other.
+This broker could be a Linux Server.
 
-### Groups
-When running the first time, the application will create a file called 'groups.cfg' in the application directory.
-This will look like this:
+[learn more...](https://github.com/MiHoCode/dotnet-message-broker/wiki/Message-Broker-Server)
 
-```
-{
-  "Groups": [
-    {
-      "Name": "admins",
-      "Members": [
-        "admin"
-      ]
-    }
-  ]
-}
-```
+### Message Broker Client
+The Message Broker Client is a .NET Core class library that can be integrated into your own applications. Messages or data packets can be sent to or received from other clients in encrypted form via this interface. The classes contained in the source code can certainly be ported to other frameworks (e.g. Mono).
 
-You can edit this file to manage groups or use the admin client to execute some commands.
-For more information execute the application with the parameter 'help'.
+[More info...](https://github.com/MiHoCode/dotnet-message-broker/wiki/Message-Broker-Client-(Library))
 
-```
-> MessageBrokerServer help
-```
-All commands can also be sent through the broker client with id 'admin'.
-Receiver should be 'broker' oder 'server' then.
-Put your command like 'addgroup examplegroup' into the message content (UTF8).
+### Messaging Node
+The Messaging Node is a .NET Core console application that implements the Message Broker Client and acts as an intermediate node between the Broker Server and child devices within the network. Thus, it behaves as a server to the devices. The communication between the child devices and the messaging node is unencrypted.
+For example, this node could run on a Raspberry PI within the local network.
 
-## Using the client library
-
-Initialize and start client:
-```
-using MessageBrokerClient;
-
-string hostname = "myserver";
-string clientID = "exampleClient";
-string serverKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-string clientKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-
-MessageClient client = new MessageClient();
-
-if (!client.Start(hostname, clientID, serverKey, clientKey))
-    throw new Exception("connection failed.");
-```
-
-Send message
-```
-Message message = new Message();
-message.Receiver = "otherClient";
-message.Content = Encoding.UTF8.GetBytes("Hello World!");
-
-client.SendMessage(message, (Message response) =>
-{
-    Console.WriteLine(Encoding.UTF8.GetString(response.Content));
-});
-```
-
-Receive messages (via callback)
-```
-client.MessageReceived += (Message message) =>
-{
-    Console.WriteLine(message.Sender);
-
-    Message response = message.CreateResponse();
-    response.Content = Encoding.UTF8.GetBytes($"Hello {message.Sender}!");
-
-    client.SendMessage(response);
-};
-```
-
-Send message to group
-```
-Message message = new Message();
-message.Receiver = "group:examplegroup";
-message.Content = Encoding.UTF8.GetBytes("Hello Group!");
-
-client.SendMessage(message);
-```
+### Messaging Client
+The Messaging Client is an Arduino library. It can be used in Arduinos with Ethernet/WiFi Shield or NodeMCU devices. Furthermore, the code serves as a template for implementation in other applications.
