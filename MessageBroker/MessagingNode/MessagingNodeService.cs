@@ -26,9 +26,6 @@ namespace MessagingNode
 
         private Dictionary<string, NodeClient> clients = new Dictionary<string, NodeClient>();
 
-        /// <summary>
-        /// Gets a client object from cache or creates and adds it if not present. Threadsafe!
-        /// </summary>
         private NodeClient getClient(string clientID)
         {
             lock (clients)

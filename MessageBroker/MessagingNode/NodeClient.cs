@@ -7,14 +7,15 @@ namespace MessagingNode
 {
     public class NodeClient
     {
-
-        private List<Message> messages = new List<Message>();
+        private List<KeyValuePair<DateTime, Message>> messages = new List<KeyValuePair<DateTime, Message>>();
 
         public void AddMessage(Message m)
         {
             lock (messages)
             {
-                messages.Add(m);
+                DateTime time = DateTime.Now.AddMinutes(-5);
+                messages.RemoveAll(Item => Item.Key < time);
+                messages.Add(new KeyValuePair<DateTime, Message>(DateTime.Now, m));
             }
         }
         public List<Message> GetMessages()
@@ -22,7 +23,8 @@ namespace MessagingNode
             List<Message> result = new List<Message>();
             lock (messages)
             {
-                result.AddRange(messages);
+                foreach (var m in messages)
+                    result.Add(m.Value);
                 messages.Clear();
             }
             return result;

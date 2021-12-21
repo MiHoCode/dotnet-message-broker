@@ -10,13 +10,15 @@ namespace MessageBrokerServer
         public byte[] ClientKey { get; private set; }
         public byte[] ClientIV { get; private set; }
 
-        private List<byte[]> messages = new List<byte[]>();
+        private List<KeyValuePair<DateTime, byte[]>> messages = new List<KeyValuePair<DateTime, byte[]>>();
 
         public void AddMessage(byte[] m)
         {
             lock (messages)
             {
-                messages.Add(m);
+                DateTime time = DateTime.Now.AddMinutes(-5);
+                messages.RemoveAll(Item => Item.Key < time);
+                messages.Add(new KeyValuePair<DateTime, byte[]>(DateTime.Now, m));
             }
         }
         public List<byte[]> GetMessages()
@@ -24,7 +26,8 @@ namespace MessageBrokerServer
             List<byte[]> result = new List<byte[]>();
             lock (messages)
             {
-                result.AddRange(messages);
+                foreach (KeyValuePair<DateTime, byte[]> m in messages)
+                    result.Add(m.Value);
                 messages.Clear();
             }
             return result;
