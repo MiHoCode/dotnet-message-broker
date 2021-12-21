@@ -23,5 +23,7 @@ The Message Broker Client is a .NET Core class library that can be integrated in
 The Messaging Node is a .NET Core console application that implements the Message Broker Client and acts as an intermediate node between the Broker Server and child devices within the network. Thus, it behaves as a server to the devices. The communication between the child devices and the messaging node is unencrypted.
 For example, this node could run on a Raspberry PI within the local network.
 
+[More info...](https://github.com/MiHoCode/dotnet-message-broker/wiki/Messaging-Node)
+
 ### Messaging Client
-The Messaging Client is an Arduino library. It can be used in Arduinos with Ethernet/WiFi Shield or NodeMCU devices. Furthermore, the code serves as a template for implementation in other applications.
+The Messaging Client is an example scetch for Arduino. It can be used in Arduinos with Ethernet/WiFi Shield or NodeMCU devices. The code serves as a template for implementation in other applications.
