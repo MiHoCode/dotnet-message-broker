@@ -17,13 +17,13 @@ This broker could be a Linux Server.
 ### Message Broker Client
 The Message Broker Client is a .NET Core class library that can be integrated into your own applications. Messages or data packets can be sent to or received from other clients in encrypted form via this interface. The classes contained in the source code can certainly be ported to other frameworks (e.g. Mono).
 
-[More info...](https://github.com/MiHoCode/dotnet-message-broker/wiki/Message-Broker-Client-(Library))
+[learn more...](https://github.com/MiHoCode/dotnet-message-broker/wiki/Message-Broker-Client-(Library))
 
 ### Messaging Node
 The Messaging Node is a .NET Core console application that implements the Message Broker Client and acts as an intermediate node between the Broker Server and child devices within the network. Thus, it behaves as a server to the devices. The communication between the child devices and the messaging node is unencrypted.
 For example, this node could run on a Raspberry PI within the local network.
 
-[More info...](https://github.com/MiHoCode/dotnet-message-broker/wiki/Messaging-Node)
+[learn more...](https://github.com/MiHoCode/dotnet-message-broker/wiki/Messaging-Node)
 
 ### Messaging Client
 The Messaging Client is an example scetch for Arduino. It can be used in Arduinos with Ethernet/WiFi Shield or NodeMCU devices. The code serves as a template for implementation in other applications.
