@@ -23,11 +23,21 @@ namespace MessagingNode
             string clientId = cfg.GetElementsByTagName("clientId")[0].InnerText;
             string serverKey = cfg.GetElementsByTagName("serverKey")[0].InnerText;
             string clientKey = cfg.GetElementsByTagName("clientKey")[0].InnerText;
-            
-            using (MessagingNodeService node = new MessagingNodeService(host, clientId, serverKey, clientKey))
+
+            try
             {
-                node.Run();
+                using (MessagingNodeService node = new MessagingNodeService(host, clientId, serverKey, clientKey))
+                {
+                    node.Run();
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("MessagingNode crashed with ERROR:");
+                Console.WriteLine(ex.ToString());
+            }
+
+            Console.WriteLine("MessagingNode stopped.");
         }
     }
 }

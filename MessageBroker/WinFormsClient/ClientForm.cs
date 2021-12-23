@@ -88,7 +88,7 @@ namespace WinFormsClient
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (client.Running)
+            if (client != null && client.Running)
                 client.Close();
             base.OnClosing(e);
         }

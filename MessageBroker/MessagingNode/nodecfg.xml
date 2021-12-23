@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <host>127.0.0.1</host>
-  <clientId>exampleClient</clientId>
-  <serverKey>xxxxxxxxxxxx</serverKey>
-  <clientKey>xxxxxxxxxxxx</clientKey>
+  <host>hofmeier.cloud</host>
+  <clientId>homepi</clientId>
+  <serverKey>3mv83KZB/Nejey/rIt6CPMcAQbe/Z9f4CPJA/N4CSjM=</serverKey>
+  <clientKey>5iLmOqkwnllR/C8Sw8PCtrNEEpi8eCoHierADaGPeZU=</clientKey>
 </config>
