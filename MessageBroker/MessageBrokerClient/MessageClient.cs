@@ -22,6 +22,7 @@ namespace MessageBrokerClient
         public byte[] ClientIV { get; private set; }
 
         public int RequestDelay { get; set; }
+        public bool AutoReconnect { get; set; } = true;
 
         public Exception Exception { get; set; } = null;
 
@@ -77,58 +78,76 @@ namespace MessageBrokerClient
 
         private void run()
         {
-            while (this.Running)
+            try
             {
-                Message outMessage = null;
-                lock (messages)
+                while (this.Running)
                 {
-                    if (messages.Count > 0)
+                    Message outMessage = null;
+                    lock (messages)
                     {
-                        outMessage = messages[0];
-                        messages.RemoveAt(0);
-                    }
-                }
-
-                if(outMessage != null)
-                {
-                    stream.WriteEncrypt(Encoding.UTF8.GetBytes("message"), this.ClientKey, this.ClientIV);
-                    stream.WriteEncrypt(outMessage.ToByteArray(), this.ClientKey, this.ClientIV);
-                }
-                else
-                {
-                    stream.WriteEncrypt(Encoding.UTF8.GetBytes("peek"), this.ClientKey, this.ClientIV);
-                }
-
-                int incomingMessages = stream.ReadInt16();
-                for (int i = 0; i < incomingMessages; i++)
-                {
-                    byte[] messageBytes = stream.ReadDecrypt(this.ClientKey, this.ClientIV);
-                    Message message = Message.FromByteArray(messageBytes);
-
-                    Action<Message> callback = null;
-                    if (!string.IsNullOrEmpty(message.IsResponseOf))
-                    {
-                        lock (callbacks)
+                        if (messages.Count > 0)
                         {
-                            if (callbacks.ContainsKey(message.IsResponseOf))
-                            {
-                                callback = callbacks[message.IsResponseOf];
-                                callbacks.Remove(message.IsResponseOf);
-                            }
+                            outMessage = messages[0];
+                            messages.RemoveAt(0);
                         }
                     }
 
-                    if(callback != null)
+                    if (outMessage != null)
                     {
-                        callback(message);
+                        stream.WriteEncrypt(Encoding.UTF8.GetBytes("message"), this.ClientKey, this.ClientIV);
+                        stream.WriteEncrypt(outMessage.ToByteArray(), this.ClientKey, this.ClientIV);
                     }
                     else
                     {
-                        OnMessageReceived(message);
+                        stream.WriteEncrypt(Encoding.UTF8.GetBytes("peek"), this.ClientKey, this.ClientIV);
                     }
-                }
 
-                Thread.Sleep(this.RequestDelay);
+                    int incomingMessages = stream.ReadInt16();
+                    for (int i = 0; i < incomingMessages; i++)
+                    {
+                        byte[] messageBytes = stream.ReadDecrypt(this.ClientKey, this.ClientIV);
+                        Message message = Message.FromByteArray(messageBytes);
+
+                        Action<Message> callback = null;
+                        if (!string.IsNullOrEmpty(message.IsResponseOf))
+                        {
+                            lock (callbacks)
+                            {
+                                if (callbacks.ContainsKey(message.IsResponseOf))
+                                {
+                                    callback = callbacks[message.IsResponseOf];
+                                    callbacks.Remove(message.IsResponseOf);
+                                }
+                            }
+                        }
+
+                        if (callback != null)
+                        {
+                            callback(message);
+                        }
+                        else
+                        {
+                            OnMessageReceived(message);
+                        }
+                    }
+
+                    Thread.Sleep(this.RequestDelay);
+                }
+            }
+            catch
+            {
+                try
+                {
+                    tcp.Close();
+                    tcp.Dispose();
+                }
+                catch { }
+
+                if (this.AutoReconnect && this.Running)
+                {
+                    Thread.Sleep(5000);
+                    this.Start(this.Hostname, this.ClientID, Convert.ToBase64String(this.ServerKey), Convert.ToBase64String(this.ClientKey));
+                }
             }
         }
 
