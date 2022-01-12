@@ -65,7 +65,11 @@ namespace MessagingNode
 
         public void Run()
         {
-            this.BrokerClient.Start(this.Host, this.ClientID, this.ServerKey, this.ClientKey);
+            if(!this.BrokerClient.Start(this.Host, this.ClientID, this.ServerKey, this.ClientKey))
+            {
+                Console.WriteLine("BrokerClient failed.");
+                return;
+            }
             Console.WriteLine("BrokerClient running.");
 
             running = true;
