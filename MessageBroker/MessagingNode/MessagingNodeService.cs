@@ -100,21 +100,22 @@ namespace MessagingNode
                 writer.NewLine = "\n";
                 
 
-                string deviceID = reader.ReadLine();
+                string deviceID = reader.ReadLine().Trim();
                 NodeClient client = getClient(deviceID);
                 bool connected = true;
+                Console.WriteLine(string.Format("Device connected: '{0}'", deviceID));
 
                 while (connected) // loop
                 {
                     // receive a command
-                    string command = reader.ReadLine();
+                    string command = reader.ReadLine().Trim();
 
                     if (command == "message")
                     {
                         Message m = new Message();
                         m.Sender = this.ClientID + "/" + deviceID;
-                        m.Recipient = reader.ReadLine();
-                        m.Content = Encoding.UTF8.GetBytes(reader.ReadLine());
+                        m.Recipient = reader.ReadLine().Trim();
+                        m.Content = Encoding.UTF8.GetBytes(reader.ReadLine().Trim());
 
                         this.BrokerClient.SendMessage(m);
                     }
