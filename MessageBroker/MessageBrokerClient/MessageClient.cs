@@ -146,7 +146,10 @@ namespace MessageBrokerClient
                 if (this.AutoReconnect && this.Running)
                 {
                     Thread.Sleep(5000);
-                    this.Start(this.Hostname, this.ClientID, Convert.ToBase64String(this.ServerKey), Convert.ToBase64String(this.ClientKey));
+                    while(!this.Start(this.Hostname, this.ClientID, Convert.ToBase64String(this.ServerKey), Convert.ToBase64String(this.ClientKey)))
+                    {
+                        Thread.Sleep(5000);
+                    }
                 }
             }
         }
