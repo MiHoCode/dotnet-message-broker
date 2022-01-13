@@ -133,6 +133,7 @@ namespace MessagingNode
                         writer.WriteLine(m.Sender);
                         writer.WriteLine(Encoding.UTF8.GetString(m.Content));
                     }
+                    writer.Flush();
                 }
 
                 tcp.Close();
