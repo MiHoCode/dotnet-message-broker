@@ -54,6 +54,7 @@ namespace MessagingNode
 
         private void OnMessageReceived(Message message)
         {
+            Console.WriteLine(string.Format("Message incoming: {0}->{1}: '{2}'", message.Sender, message.Recipient, Encoding.UTF8.GetString(message.Content)));
             if (!message.Recipient.Contains('/'))
             {
                 return;
@@ -115,18 +116,23 @@ namespace MessagingNode
                         Message m = new Message();
                         m.Sender = this.ClientID + "/" + deviceID;
                         m.Recipient = reader.ReadLine().Trim();
-                        m.Content = Encoding.UTF8.GetBytes(reader.ReadLine().Trim());
+                        string content = reader.ReadLine().Trim();
+                        m.Content = Encoding.UTF8.GetBytes(content);
 
                         this.BrokerClient.SendMessage(m);
+
+                        Console.WriteLine(string.Format("Message forwarded: {0}->{1}: '{2}'", m.Sender, m.Recipient, content));
                     }
                     else if (command == "disconnect") // close session
                     {
+                        Console.WriteLine(string.Format("Device disconnected: '{0}'", deviceID));
                         tcp.Close();
                         tcp.Dispose();
                         return;
                     }
                     else // i.e. "peek"
                     {
+                        Console.WriteLine(string.Format("peek: '{0}'", deviceID));
                         // no action required
                         // all other commands will result in sending pending messages to the client.
                     }
